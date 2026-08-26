@@ -1,0 +1,95 @@
+##########################
+# .NET
+##########################
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+publish/
+*.publishsettings
+appsettings.Development.json
+appsettings.*.local.json
+**/appsettings.Secrets.json
+*.pfx
+*.pem
+*.key
+
+##########################
+# EF Core / SQL
+##########################
+*.mdf
+*.ldf
+*.ndf
+
+##########################
+# Angular / Node
+##########################
+frontend/**/node_modules/
+frontend/**/dist/
+frontend/**/.angular/
+frontend/**/coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+##########################
+# Docker
+##########################
+docker/**/*.log
+docker/**/data/
+docker/**/qdrant_storage/
+docker/**/mssql_data/
+
+##########################
+# Environment / Secrets
+##########################
+.env
+.env.local
+.env.*.local
+!.env.example
+**/secrets.json
+**/*secret*.json
+!**/*secret*.example.json
+
+##########################
+# Logs / Observability
+##########################
+logs/
+*.log
+Logs/
+
+##########################
+# IDE
+##########################
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+##########################
+# Test / Coverage output
+##########################
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+##########################
+# Misc build artifacts
+##########################
+*.cache
+.dotnet/
