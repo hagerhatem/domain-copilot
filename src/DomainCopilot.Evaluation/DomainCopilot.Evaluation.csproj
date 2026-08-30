@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DomainCopilot.Evaluation</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <!--
+    Deliberately zero PackageReference entries. This project must build with
+    nothing but the .NET 8 SDK - no NuGet restore, no network access required.
+    When this harness is later pointed at the real agentic pipeline, add a
+    ProjectReference to DomainCopilot.Application (for the real ILLMProvider /
+    retrieval ports) instead of adding new NuGet packages here.
+  -->
+
+</Project>

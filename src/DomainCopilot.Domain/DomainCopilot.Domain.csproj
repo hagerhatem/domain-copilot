@@ -1,9 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>DomainCopilot.Domain</RootNamespace>
+    <!-- Deliberately zero PackageReferences: pure C# / BCL only.
+         No EF Core, no LLM SDK, no ASP.NET Core may ever be added here. -->
   </PropertyGroup>
 
 </Project>
