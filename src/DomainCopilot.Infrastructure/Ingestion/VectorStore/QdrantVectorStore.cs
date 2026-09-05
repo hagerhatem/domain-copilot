@@ -110,6 +110,18 @@ public sealed class QdrantVectorStore : IVectorStore
                 filter: filter,
                 limit: (ulong)query.TopK,
                 cancellationToken: ct);
+
+        //try
+        //{
+        //    await EnsureCollectionAsync(ct);
+        //    var filter = BuildFilter(query.Filter);
+        //    var results = await _client.QueryAsync(
+        //        collectionName: _options.CollectionName,
+        //        query: query.Vector,
+        //        filter: filter,
+        //        limit: (ulong)query.TopK,
+        //        cancellationToken: ct);
+
             // ⚠ Worth a quick sanity check against the documented zero-length-vector
             // bug on Upsert (see ToPointStruct comment below) — confirm this SearchAsync
             // overload's implicit float[] -> query vector conversion actually populates
