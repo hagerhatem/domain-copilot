@@ -1,0 +1,40 @@
+.full-width {
+  width: 100%;
+}
+
+.error {
+  color: #b00020;
+}
+
+.refusal-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #b00020;
+  border-radius: 4px;
+  background: #fdecea;
+  color: #611a15;
+}
+
+.refusal-reason {
+  font-style: italic;
+  margin: 0;
+}
+
+.citations {
+  margin-top: 1.5rem;
+}
+
+.citation-card {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+}
+
+.citation-text {
+  margin: 0 0 0.5rem;
+}
+
+.citation-meta {
+  margin: 0;
+  color: #555;
+  font-size: 0.85rem;
+}

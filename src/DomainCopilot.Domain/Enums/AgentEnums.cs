@@ -35,6 +35,17 @@ public enum AgentRunStatus
     Completed,
     Rejected,
     Refused,
+    /// <summary>
+    /// A downstream agent (Safety Checker or Documentation Drafter) failed even
+    /// after exhausting retries, but an earlier agent's results were still valid
+    /// and are being returned anyway (FR-5's graceful degradation) rather than
+    /// discarding a partial answer or crashing the run. Distinct from Failed (an
+    /// unrecoverable error with nothing usable to return) and from Completed (the
+    /// full pipeline succeeded) - for the same reason Refused is kept distinct from
+    /// Failed: collapsing this into either would hide a behavior this system needs
+    /// to demonstrate honestly.
+    /// </summary>
+    Degraded,
     Failed,
     Cancelled
 }

@@ -1,0 +1,30 @@
+<div class="run-progress">
+  <div class="run-progress__header">
+    <button type="button" (click)="start()" [disabled]="isRunning()">Start Run</button>
+    <button type="button" (click)="cancel()" [disabled]="!runId() || !isRunning() || isCancelling()">
+      {{ isCancelling() ? 'Cancelling…' : 'Cancel' }}
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="run-progress__error">{{ errorMessage() }}</p>
+  }
+
+  <div class="run-progress__chips">
+    @for (chip of agentChips(); track chip.role) {
+      <span class="chip" [class]="'chip--' + chip.status">{{ chip.label }}: {{ chip.status }}</span>
+    }
+  </div>
+
+  <pre class="run-progress__log">{{ progressLog().join('\n') }}</pre>
+
+  @if (isAwaitingApproval()) {
+    <div class="run-progress__approval-banner">
+      <strong>✅ Run complete — awaiting clinician approval.</strong>
+      <a routerLink="/approvals">Go to Approval Queue</a>
+    </div>
+  }
+  @if (runId()) {
+    <a class="run-progress__trace-link" [routerLink]="['/trace', runId()]">View Full Trace</a>
+  }
+</div>

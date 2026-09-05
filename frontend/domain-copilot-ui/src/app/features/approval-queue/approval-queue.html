@@ -1,0 +1,70 @@
+<h2>Approval Queue</h2>
+
+@if (isLoading()) {
+  <p>Loading…</p>
+} @else if (loadError()) {
+  <p class="error">{{ loadError() }}</p>
+} @else if (runs().length === 0) {
+  <p>No runs are currently awaiting approval.</p>
+} @else {
+  <mat-accordion multi>
+    @for (run of runs(); track run.runId) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Run {{ run.runId }}</mat-panel-title>
+          <mat-panel-description>Clinical Case {{ run.clinicalCaseId }}</mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <h4>Pipeline Steps</h4>
+        <div class="chips">
+          @for (step of run.steps; track step.stepIndex) {
+            <span class="chip" [class]="'chip--' + step.status.toLowerCase()">
+              {{ step.agentRole }}: {{ step.status }}
+            </span>
+          }
+        </div>
+
+        <h4>Drafted Clinical Note</h4>
+        @if (!state(run.runId).isEditing) {
+          <pre class="draft-text">{{ fullDraftText(run) }}</pre>
+        } @else {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Edited Note</mat-label>
+            <textarea
+              matInput
+              rows="10"
+              [ngModel]="state(run.runId).editedText"
+              (ngModelChange)="updateEditedText(run.runId, $event)"
+            ></textarea>
+          </mat-form-field>
+        }
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Rejection comment (required for Reject)</mat-label>
+          <input
+            matInput
+            [ngModel]="state(run.runId).rejectComment"
+            (ngModelChange)="updateRejectComment(run.runId, $event)"
+          />
+        </mat-form-field>
+
+        @if (state(run.runId).actionError) {
+          <p class="error">{{ state(run.runId).actionError }}</p>
+        }
+
+        <a [routerLink]="['/trace', run.runId]" class="trace-link">View Full Trace</a>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" (click)="approve(run.runId)">Approve</button>
+          <button mat-flat-button color="warn" (click)="reject(run.runId)">Reject</button>
+          @if (!state(run.runId).isEditing) {
+            <button mat-stroked-button (click)="toggleEdit(run.runId)">Edit &amp; Approve</button>
+          } @else {
+            <button mat-flat-button (click)="editAndApprove(run.runId)">Submit Edited &amp; Approve</button>
+            <button mat-button (click)="toggleEdit(run.runId)">Cancel Edit</button>
+          }
+        </div>
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+}

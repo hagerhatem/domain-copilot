@@ -65,4 +65,10 @@ public sealed class EfDocumentRepository : IDocumentRepository
             .Where(d => ids.Contains(d.Id))
             .ToListAsync(ct);
     }
+
+    public async Task<IReadOnlyList<Document>> GetAllAsync(CancellationToken ct) =>
+    await _db.Documents
+        .AsNoTracking()
+        .OrderByDescending(d => d.UpdatedAtUtc)
+        .ToListAsync(ct);
 }

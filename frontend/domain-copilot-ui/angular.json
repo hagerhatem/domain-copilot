@@ -9,11 +9,16 @@
   "projects": {
     "domain-copilot-ui": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
+"schematics": {
+  "@schematics/angular:component": {
+    "type": "",
+    "style": "scss",
+    "skipTests": true
+  },
+  "@schematics/angular:service": {
+    "skipTests": true
+  }
+},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",

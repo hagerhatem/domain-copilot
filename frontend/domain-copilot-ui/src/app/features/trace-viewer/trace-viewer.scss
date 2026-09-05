@@ -1,0 +1,38 @@
+.full-width {
+  width: 100%;
+}
+
+.error {
+  color: #b00020;
+}
+
+.run-summary,
+.step-card,
+.approval-card {
+  margin-top: 1rem;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.chip {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: #eee;
+
+  &--succeeded { background: #d4edda; color: #155724; }
+  &--failed { background: #f8d7da; color: #721c24; }
+  &--running { background: #fff3cd; color: #7a5c00; }
+  &--pending { background: #eee; color: #555; }
+  &--skipped { background: #e2e3e5; color: #383d41; }
+}
+
+.step-meta {
+  color: #555;
+  font-size: 0.85rem;
+}

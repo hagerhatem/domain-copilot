@@ -1,0 +1,41 @@
+<mat-card>
+  <mat-card-title>Ask a Question</mat-card-title>
+  <mat-card-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Question</mat-label>
+      <input matInput [(ngModel)]="question" (keyup.enter)="submit()" />
+    </mat-form-field>
+    <button mat-flat-button color="primary" [disabled]="isSubmitting()" (click)="submit()">
+      {{ isSubmitting() ? 'Searching…' : 'Ask' }}
+    </button>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <!-- Distinct visual state: refusal, never rendered as a normal answer -->
+    @if (refusal(); as r) {
+      <div class="refusal-panel">
+        <strong>⚠ Insufficient evidence to answer this question</strong>
+        <p>{{ r.message }}</p>
+        <p class="refusal-reason">Reason: {{ r.reason }}</p>
+      </div>
+    }
+
+    @if (citations(); as c) {
+      <div class="citations">
+        <h3>Answer (grounded in {{ c.length }} cited excerpt{{ c.length === 1 ? '' : 's' }})</h3>
+        @for (citation of c; track citation.text) {
+          <mat-card class="citation-card" appearance="outlined">
+            <p class="citation-text">{{ citation.text }}</p>
+            <p class="citation-meta">
+              📄 {{ citation.sourceDocumentFileName }}
+              @if (citation.section) { — {{ citation.section }} }
+              @if (citation.pageNumber) { , p. {{ citation.pageNumber }} }
+            </p>
+          </mat-card>
+        }
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

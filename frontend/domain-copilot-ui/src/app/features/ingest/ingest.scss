@@ -1,0 +1,18 @@
+.error {
+  color: #b00020;
+}
+
+.result {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  background: #e8f5e9;
+
+  &--failed {
+    background: #fdecea;
+  }
+}
+
+.documents-table {
+  margin-top: 1.5rem;
+}

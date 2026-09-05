@@ -29,11 +29,12 @@ namespace DomainCopilot.Domain.Entities;
 /// </summary>
 public sealed class AgentRun : Entity
 {
-    private static readonly AgentRunStatus[] TerminalStatuses =
+     private static readonly AgentRunStatus[] TerminalStatuses =
     {
         AgentRunStatus.Completed,
         AgentRunStatus.Rejected,
         AgentRunStatus.Refused,
+        AgentRunStatus.Degraded,
         AgentRunStatus.Failed,
         AgentRunStatus.Cancelled
     };
@@ -160,6 +161,25 @@ public sealed class AgentRun : Entity
 
         TerminationReason = reason.Trim();
         Status = AgentRunStatus.Failed;
+        CompletedAt = completedAt ?? DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>
+    /// Correctly completes the run in a reduced-content state after a downstream
+    /// agent (Safety Checker or Documentation Drafter) failed even after retries,
+    /// while an earlier agent's results are still valid and useful on their own.
+    /// See AgentRunStatus.Degraded's XML docs for why this is a distinct outcome
+    /// from both Failed and Completed.
+    /// </summary>
+    public void Degrade(string reason, DateTimeOffset? completedAt = null)
+    {
+        if (string.IsNullOrWhiteSpace(reason))
+            throw new ArgumentException("Degrade reason cannot be empty.", nameof(reason));
+        if (TerminalStatuses.Contains(Status))
+            throw new InvalidOperationException($"Cannot degrade a run already in terminal status {Status}.");
+
+        TerminationReason = reason.Trim();
+        Status = AgentRunStatus.Degraded;
         CompletedAt = completedAt ?? DateTimeOffset.UtcNow;
     }
 

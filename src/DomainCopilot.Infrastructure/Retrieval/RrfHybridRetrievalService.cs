@@ -73,11 +73,37 @@ public sealed class RrfHybridRetrievalService : IHybridRetrievalService
 
         if (!denseResult.IsSuccess)
             return Result<IReadOnlyList<RetrievedChunk>>.Failure(new VectorSearchFailedError(denseResult.Error!.Message));
-        if (!keywordResult.IsSuccess)
-            return Result<IReadOnlyList<RetrievedChunk>>.Failure(new KeywordSearchFailedError(keywordResult.Error!.Message));
 
-        var denseHits = denseResult.Value!;
-        var keywordHits = keywordResult.Value!;
+        // KNOWN LIMITATION (temporary, environment-specific - see keywordHits below
+        // for the Full-Text Search context): with the keyword leg degraded and a
+        // small demo corpus, RRF's rank-based fusion alone lets ANY indexed chunk
+        // "win" simply for having no real competition - confirmed directly (an
+        // off-topic query returned an unrelated document as if it were sufficient
+        // evidence). A raw cosine-similarity floor on the dense leg, applied BEFORE
+        // fusion, is a more honest relevance signal than rank position alone when
+        // the corpus is this small. MinDenseSimilarity is a rough, untuned value
+        // (see EvidenceSufficiencyOptions.MinFusedScore's own "not tuned against
+        // the FR-3 golden set" caveat - this has the same status) - revisit once a
+        // real-sized corpus and golden set exist.
+        var denseHits = denseResult.Value!
+            .Where(h => h.Score >= _options.MinDenseSimilarity)
+            .ToList();
+
+        // KNOWN LIMITATION (temporary, environment-specific): the keyword leg
+        // requires SQL Server Full-Text Search, which is unavailable on the
+        // mssql/server:2022-latest image in this environment
+        // (SERVERPROPERTY('IsFullTextInstalled') = 0 - confirmed directly, not
+        // assumed). Rather than fail every retrieval request outright when that
+        // happens, degrade gracefully to dense-only (Qdrant) results - this keeps
+        // Ask/DocumentationDrafter functional, at the cost of losing FR-2's keyword
+        // leg's contribution to fusion. This is NOT the intended long-term
+        // behavior: FR-2 explicitly requires the hybrid (dense + keyword) design,
+        // and this degrade path must be removed once Full-Text Search is properly
+        // enabled on the target SQL Server instance.
+        var keywordHits = keywordResult.IsSuccess
+            ? keywordResult.Value!
+            : Array.Empty<KeywordSearchHit>();
+
 
         // 3. Fuse by rank position (RRF), not raw score — the two scales are incomparable.
         var denseRankedIds = denseHits.Select(h => h.ChunkId.Value).ToList();

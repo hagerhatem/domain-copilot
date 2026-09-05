@@ -75,4 +75,24 @@ public sealed class TokenBudget : Entity
 
         ConsumedTokens += tokens;
     }
+    /// <summary>
+    /// Reconciles a prior reservation (from HasSufficientBudgetAsync's atomic
+    /// check-and-reserve) against actual measured usage - ADR-004(d) step 5. Unlike
+    /// Consume, this does NOT throw BudgetExceededError even if it pushes
+    /// ConsumedTokens above AllocatedTokens: the tokens were already genuinely spent
+    /// with the LLM provider by the time reconciliation runs, so refusing to record
+    /// that fact would only make the budget's bookkeeping wrong, not undo the spend.
+    /// Going over here is exactly what correctly blocks the user's next
+    /// HasSufficientBudget check via a negative RemainingTokens.
+    /// </summary>
+    public void Reconcile(long actualTokens, long reservedEstimateTokens)
+    {
+        if (actualTokens < 0)
+            throw new ArgumentOutOfRangeException(nameof(actualTokens), "Actual tokens cannot be negative.");
+        if (reservedEstimateTokens < 0)
+            throw new ArgumentOutOfRangeException(nameof(reservedEstimateTokens), "Reserved estimate tokens cannot be negative.");
+
+        var adjusted = ConsumedTokens - reservedEstimateTokens + actualTokens;
+        ConsumedTokens = Math.Max(0, adjusted); // defensive floor only - should not normally trigger
+    }
 }

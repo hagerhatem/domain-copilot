@@ -20,5 +20,9 @@ public interface IDocumentRepository
     // round-trip per chunk. Documents that no longer exist are simply omitted from
     // the result rather than causing a failure — the caller treats a missing id as
     // "skip this chunk" (see RrfHybridRetrievalService).
+
     Task<IReadOnlyList<Document>> GetManyByIdsAsync(IReadOnlyList<DocumentId> ids, CancellationToken ct);
+
+    /// <summary>Prompt 12.5.2: minimal listing for the Ingest screen's "previously ingested documents" table. Ordered most-recently-updated first.</summary>
+    Task<IReadOnlyList<Document>> GetAllAsync(CancellationToken ct);
 }

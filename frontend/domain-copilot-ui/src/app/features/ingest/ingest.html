@@ -1,0 +1,58 @@
+<mat-card>
+  <mat-card-title>Ingest Document</mat-card-title>
+  <mat-card-content>
+    <input type="file" accept=".pdf,.docx" (change)="onFileSelected($event)" [disabled]="isUploading()" />
+
+    @if (isUploading()) {
+      <p>Uploading…</p>
+    }
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    @if (lastResult(); as result) {
+      <div class="result" [class.result--failed]="result.outcome === 'Failed'">
+        <strong>{{ result.outcome }}</strong> — {{ result.fileName }} (v{{ result.version }}, {{ result.chunkCount }} chunks)
+        @if (result.failureReason) {
+          <p>Reason: {{ result.failureReason }} (at {{ result.failedAtStage }})</p>
+        }
+      </div>
+    }
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="documents-table">
+  <mat-card-title>Previously Ingested Documents</mat-card-title>
+  <mat-card-content>
+    @if (documents().length === 0) {
+      <p>No documents ingested yet.</p>
+    } @else {
+      <table mat-table [dataSource]="documents()">
+        <ng-container matColumnDef="fileName">
+          <th mat-header-cell *matHeaderCellDef>File Name</th>
+          <td mat-cell *matCellDef="let d">{{ d.fileName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="version">
+          <th mat-header-cell *matHeaderCellDef>Version</th>
+          <td mat-cell *matCellDef="let d">{{ d.version }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let d">{{ d.status }}</td>
+        </ng-container>
+        <ng-container matColumnDef="chunkCount">
+          <th mat-header-cell *matHeaderCellDef>Chunks</th>
+          <td mat-cell *matCellDef="let d">{{ d.chunkCount }}</td>
+        </ng-container>
+        <ng-container matColumnDef="updatedAtUtc">
+          <th mat-header-cell *matHeaderCellDef>Updated</th>
+          <td mat-cell *matCellDef="let d">{{ d.updatedAtUtc | date: 'medium' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    }
+  </mat-card-content>
+</mat-card>

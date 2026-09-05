@@ -1,0 +1,63 @@
+<mat-card>
+  <mat-card-title>Run Clinical Workflow</mat-card-title>
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab label="Select Existing Case">
+        @if (isLoadingCases()) {
+          <p>Loading…</p>
+        } @else if (existingCases().length === 0) {
+          <p>No cases yet — create one in the other tab.</p>
+        } @else {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Clinical Case</mat-label>
+            <mat-select [(ngModel)]="selectedCaseId">
+              @for (c of existingCases(); track c.id) {
+                <mat-option [value]="c.id">{{ c.caseReference }} — {{ c.presentingComplaint }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button mat-flat-button color="primary" (click)="selectExisting()">Load Case</button>
+        }
+      </mat-tab>
+
+      <mat-tab label="Create New Case">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Case Reference</mat-label>
+          <input matInput [(ngModel)]="caseReference" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Presenting Complaint</mat-label>
+          <textarea matInput rows="2" [(ngModel)]="presentingComplaint"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Proposed Medication</mat-label>
+          <input matInput [(ngModel)]="proposedMedication" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Current Medications (comma-separated)</mat-label>
+          <input matInput [(ngModel)]="currentMedicationsInput" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Patient Context (optional)</mat-label>
+          <textarea matInput rows="2" [(ngModel)]="patientContext"></textarea>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" [disabled]="isCreating()" (click)="createCase()">
+          {{ isCreating() ? 'Creating…' : 'Create & Load' }}
+        </button>
+      </mat-tab>
+    </mat-tab-group>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+  </mat-card-content>
+</mat-card>
+
+@if (activeCaseId()) {
+  <app-run-progress [clinicalCaseId]="activeCaseId()!" />
+}

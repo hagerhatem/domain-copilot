@@ -1,0 +1,93 @@
+# version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${SQL_SA_PASSWORD:?SQL_SA_PASSWORD must be set in .env}"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$SA_PASSWORD\" -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  qdrant:
+    image: qdrant/qdrant:v1.11.0
+    ports:
+      - "6333:6333" # REST
+      - "6334:6334" # gRPC
+    healthcheck:
+      # The official Qdrant image has neither wget nor curl installed, so a plain
+      # TCP-connect check (via bash's /dev/tcp pseudo-device) is used instead of an
+      # HTTP request - it only confirms the port is accepting connections, not that
+      # /readyz specifically returns 200, but that's sufficient here since Qdrant
+      # starts listening only after it's actually ready.
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/6333' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    healthcheck:
+      # Same reasoning as the Qdrant service above: the official Ollama image has
+      # neither wget nor curl, so a plain TCP-connect check is used instead.
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/11434' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    volumes:
+      - ollama-data:/root/.ollama
+
+  api:
+    build:
+      context: ./src
+      dockerfile: DomainCopilot.Api/Dockerfile
+    environment:
+      ConnectionStrings__SqlServer: "Server=sqlserver,1433;Database=DomainCopilot;User Id=sa;Password=${SQL_SA_PASSWORD};TrustServerCertificate=True"
+      Qdrant__Host: "qdrant"
+      Qdrant__Port: "6334"
+      Llm__Ollama__BaseUrl: "http://ollama:11434"
+      Jwt__Key: "${JWT_KEY:?JWT_KEY must be set in .env}"
+      # TEMP: the mssql/server:2022-latest image does not have Full-Text Search
+      # enabled by default in this environment (contrary to earlier assumption) -
+      # skips the startup check so the demo can run on dense (Qdrant) retrieval
+      # only. Real fix (enabling FTS in the image / container) tracked separately.
+      SkipStartupInitializers: "true"
+    ports:
+      - "8080:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      # This is Prompt 11.3's payoff: the API container itself is only reported
+      # "healthy" by Docker once /health/ready confirms SQL Server, Qdrant, AND the
+      # LLM provider are all reachable from inside the API container - not just
+      # that the process started.
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  sqlserver-data:
+  qdrant-data:
+  ollama-data:
