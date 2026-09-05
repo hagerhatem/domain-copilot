@@ -35,19 +35,19 @@ public sealed class Document
         string? guidelineVersionLabel,
         DateTimeOffset? guidelineEffectiveDate,
         DateTimeOffset nowUtc) => new()
-    {
-        Id = DocumentId.New(),
-        SourceKey = sourceKey,
-        FileName = fileName,
-        Format = format,
-        ContentHash = contentHash,
-        Version = 1,
-        Status = DocumentStatus.Pending,
-        GuidelineVersionLabel = guidelineVersionLabel,
-        GuidelineEffectiveDate = guidelineEffectiveDate,
-        CreatedAtUtc = nowUtc,
-        UpdatedAtUtc = nowUtc
-    };
+        {
+            Id = DocumentId.New(),
+            SourceKey = sourceKey,
+            FileName = fileName,
+            Format = format,
+            ContentHash = contentHash,
+            Version = 1,
+            Status = DocumentStatus.Pending,
+            GuidelineVersionLabel = guidelineVersionLabel,
+            GuidelineEffectiveDate = guidelineEffectiveDate,
+            CreatedAtUtc = nowUtc,
+            UpdatedAtUtc = nowUtc
+        };
 
     public void StartNewVersion(string newContentHash, DateTimeOffset nowUtc)
     {

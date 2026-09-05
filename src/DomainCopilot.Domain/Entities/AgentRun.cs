@@ -29,8 +29,8 @@ namespace DomainCopilot.Domain.Entities;
 /// </summary>
 public sealed class AgentRun : Entity
 {
-     private static readonly AgentRunStatus[] TerminalStatuses =
-    {
+    private static readonly AgentRunStatus[] TerminalStatuses =
+   {
         AgentRunStatus.Completed,
         AgentRunStatus.Rejected,
         AgentRunStatus.Refused,

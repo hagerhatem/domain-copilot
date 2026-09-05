@@ -24,13 +24,13 @@ public sealed class DocumentChunk
         string? section,
         int? pageNumber,
         int documentVersion) => new()
-    {
-        Id = ChunkId.New(),
-        DocumentId = documentId,
-        ChunkIndex = chunkIndex,
-        Text = text,
-        Section = section,
-        PageNumber = pageNumber,
-        DocumentVersion = documentVersion
-    };
+        {
+            Id = ChunkId.New(),
+            DocumentId = documentId,
+            ChunkIndex = chunkIndex,
+            Text = text,
+            Section = section,
+            PageNumber = pageNumber,
+            DocumentVersion = documentVersion
+        };
 }
