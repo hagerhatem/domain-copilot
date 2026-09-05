@@ -120,6 +120,13 @@ builder.Services.AddHttpClient<IEmbeddingService, OllamaEmbeddingService>(client
 {
     var baseUrl = builder.Configuration["Llm:Ollama:BaseUrl"] ?? "http://localhost:11434";
     client.BaseAddress = new Uri(baseUrl);
+    // Ollama's default HttpClient timeout (100s) is shorter than a cold-start model
+    // load can take on CPU-only hardware (observed: ~127s just to load llama3 into
+    // RAM before any inference even starts) - without this, every first call after
+    // Ollama restarts or the model gets evicted from memory (OLLAMA_KEEP_ALIVE
+    // expiry) fails with a silent client-side timeout, which looked from the
+    // orchestrator's perspective like a hung/stuck run with no exception logged.
+    client.Timeout = TimeSpan.FromMinutes(5);
 });
 
 builder.Services.AddScoped<IngestDocumentUseCase>();
@@ -143,11 +150,19 @@ builder.Services.AddHttpClient("Llm:Ollama:Cheap", client =>
 {
     var baseUrl = builder.Configuration["Llm:Ollama:BaseUrl"] ?? "http://localhost:11434";
     client.BaseAddress = new Uri(baseUrl);
+    // See IEmbeddingService's HttpClient registration above for why this is 5
+    // minutes, not the .NET default 100s.
+    client.Timeout = TimeSpan.FromMinutes(5);
 });
+
+
 builder.Services.AddHttpClient("Llm:Ollama:Strong", client =>
 {
     var baseUrl = builder.Configuration["Llm:Ollama:BaseUrl"] ?? "http://localhost:11434";
     client.BaseAddress = new Uri(baseUrl);
+    // See IEmbeddingService's HttpClient registration above for why this is 5
+    // minutes, not the .NET default 100s.
+    client.Timeout = TimeSpan.FromMinutes(5);
 });
 
 builder.Services.AddKeyedScoped<ILLMProvider>(CostAwareLlmRouter.CheapProviderKey, (sp, _) =>
