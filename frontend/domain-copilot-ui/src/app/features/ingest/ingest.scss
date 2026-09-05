@@ -1,18 +1,196 @@
-.error {
-  color: #b00020;
-}
+/* ============================================
+   Cards
+   ============================================ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
 
-.result {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  border-radius: 4px;
-  background: #e8f5e9;
-
-  &--failed {
-    background: #fdecea;
+  &:hover {
+    box-shadow: var(--shadow-md);
   }
 }
 
 .documents-table {
-  margin-top: 1.5rem;
+  margin-top: 0;
+}
+
+/* ============================================
+   Upload Area
+   ============================================ */
+.upload-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 180px;
+  padding: 24px;
+
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  input[type='file'] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .upload-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .upload-description {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+}
+
+/* ============================================
+   Messages
+   ============================================ */
+.error-message {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+
+  font-size: 13px;
+  color: #b91c1c;
+  background: var(--danger-light);
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   Result Card
+   ============================================ */
+.result-card {
+  margin-top: 16px;
+  padding: 14px 16px;
+
+  background: var(--success-light);
+  border-radius: var(--radius-md);
+
+  &--failed {
+    background: var(--danger-light);
+  }
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  strong {
+    color: var(--text-primary);
+    font-size: 14px;
+  }
+}
+
+.result-meta {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.result-reason {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+/* ============================================
+   Status Badges
+   ============================================ */
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-success {
+  color: #047857;
+  background: var(--success-light);
+}
+
+.status-warning {
+  color: #b45309;
+  background: var(--warning-light);
+}
+
+.status-danger {
+  color: #b91c1c;
+  background: var(--danger-light);
+}
+
+/* ============================================
+   Table
+   ============================================ */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.empty-state {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 14px 16px;
+    background: #f8fafc;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 16px;
+    color: var(--text-primary);
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: #f8fafc;
+  }
 }

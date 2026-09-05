@@ -1,3 +1,21 @@
+// @use '@angular/material' as mat;
+
+// html {
+//   @include mat.theme(
+//     (
+//       color: mat.$violet-palette,
+//       typography: Roboto,
+//       density: 0,
+//     )
+//   );
+// }
+
+// html,
+// body {
+//   height: 100%;
+//   margin: 0;
+//   font-family: Roboto, 'Helvetica Neue', sans-serif;
+// }
 @use '@angular/material' as mat;
 
 html {
@@ -10,9 +28,154 @@ html {
   );
 }
 
+/* ============================================
+   D0T3 - Global Theme
+   Deep Navy + Electric Violet
+   ============================================ */
+:root {
+  /* Brand */
+  --primary: #0f172a;
+  --primary-light: #1e293b;
+
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-light: #eef2ff;
+
+  --purple: #8b5cf6;
+  --purple-light: #f5f3ff;
+
+  /* Status */
+  --success: #10b981;
+  --success-light: #ecfdf5;
+
+  --warning: #f59e0b;
+  --warning-light: #fffbeb;
+
+  --danger: #ef4444;
+  --danger-light: #fef2f2;
+
+  /* Backgrounds */
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-white: #ffffff;
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.10);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* AI Gradient */
+  --ai-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+
+  /* Layout */
+  --navbar-height: 64px;
+
+  /* ============================================
+     Override Angular Material M3 system tokens
+     عشان كل الكومبوننتس (mat-button, mat-toolbar...)
+     تاخد ألوان D0T3 بدل الـ violet-palette الافتراضي
+     ============================================ */
+  --mat-sys-primary: var(--accent);
+  --mat-sys-on-primary: var(--text-white);
+  --mat-sys-primary-container: var(--accent-light);
+  --mat-sys-on-primary-container: var(--accent-hover);
+
+  --mat-sys-surface: var(--surface);
+  --mat-sys-on-surface: var(--text-primary);
+  --mat-sys-surface-variant: var(--surface-hover);
+  --mat-sys-on-surface-variant: var(--text-secondary);
+
+  --mat-sys-background: var(--background);
+  --mat-sys-on-background: var(--text-primary);
+
+  --mat-sys-outline: var(--border);
+  --mat-sys-outline-variant: var(--border-light);
+
+  --mat-sys-error: var(--danger);
+  --mat-sys-on-error: var(--text-white);
+
+  /* ============================================
+     Override input fields (outline) focus color
+     ده بيحل مشكلة اللون الأزرق حوالين الحقول لما
+     تدوس عليها، لأن Material بيحط قيمة منفصلة
+     مش تابعة لـ --mat-sys-primary
+     ============================================ */
+  --mdc-outlined-text-field-focus-outline-color: var(--accent);
+  --mdc-outlined-text-field-focus-label-text-color: var(--accent);
+  --mdc-outlined-text-field-caret-color: var(--accent);
+  --mdc-outlined-text-field-hover-outline-color: var(--text-secondary);
+  --mdc-outlined-text-field-outline-color: var(--border);
+  --mat-select-focused-arrow-color: var(--accent);
+}
+
+/* ============================================
+   Global Reset
+   ============================================ */
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  padding: 0;
+}
+
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* ============================================
+   Typography
+   ============================================ */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   Scrollbar
+   ============================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+
+  &:hover {
+    background: #94a3b8;
+  }
 }

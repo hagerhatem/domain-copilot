@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<!-- <mat-toolbar color="primary">
   <span>Domain Copilot</span>
   @if (auth.isAuthenticated()) {
     <span class="app-nav">
@@ -9,6 +9,26 @@
         <a mat-button routerLink="/approvals">Approval Queue</a>
       }
       <a mat-button routerLink="/trace">Trace Viewer</a>
+      <button mat-button (click)="auth.logout()">Logout</button>
+    </span>
+  }
+</mat-toolbar>
+
+<main class="app-content">
+  <router-outlet />
+</main> -->
+
+<mat-toolbar color="primary">
+  <span>Domain Copilot</span>
+  @if (auth.isAuthenticated()) {
+    <span class="app-nav">
+      <a mat-button routerLink="/ingest" routerLinkActive="active-link">Ingest</a>
+      <a mat-button routerLink="/ask" routerLinkActive="active-link">Ask</a>
+      <a mat-button routerLink="/workflow" routerLinkActive="active-link">Run Workflow</a>
+      @if (auth.hasRole('Clinician')) {
+        <a mat-button routerLink="/approvals" routerLinkActive="active-link">Approval Queue</a>
+      }
+      <a mat-button routerLink="/trace" routerLinkActive="active-link">Trace Viewer</a>
       <button mat-button (click)="auth.logout()">Logout</button>
     </span>
   }

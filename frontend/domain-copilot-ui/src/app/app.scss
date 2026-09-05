@@ -1,9 +1,58 @@
+// .app-nav {
+//   margin-left: auto;
+//   display: flex;
+//   gap: 0.25rem;
+// }
+
+// .app-content {
+//   padding: 1.5rem;
+// }
+/* ============================================
+   Navbar
+   ============================================ */
+mat-toolbar {
+  height: var(--navbar-height) !important;
+  background: var(--primary) !important;
+  color: var(--text-white) !important;
+  box-shadow: var(--shadow-md);
+  padding: 0 24px;
+
+  span {
+    color: var(--text-white);
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
 .app-nav {
   margin-left: auto;
   display: flex;
+  align-items: center;
   gap: 0.25rem;
+
+  a,
+  button {
+    color: #cbd5e1 !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--text-white) !important;
+      background: rgba(99, 102, 241, 0.15) !important;
+    }
+
+    &.active-link {
+      color: var(--text-white) !important;
+      background: var(--accent) !important;
+    }
+  }
 }
 
+/* ============================================
+   Page Content
+   ============================================ */
 .app-content {
+  min-height: calc(100vh - var(--navbar-height));
   padding: 1.5rem;
+  background: var(--background);
 }
