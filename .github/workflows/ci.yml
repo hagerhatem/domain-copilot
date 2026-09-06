@@ -53,9 +53,12 @@ jobs:
           dotnet test ${{ env.SOLUTION_PATH }} \
             --configuration Release \
             --no-build \
+            --filter "Category!=RequiresOllama" \
             --logger "trx;LogFileName=test-results.trx" \
             --results-directory ./TestResults \
             --collect:"XPlat Code Coverage"
+        env:
+          Jwt__Key: "ci-only-insecure-test-key-do-not-use-in-production-32charsplus"
 
       - name: Upload test results
         if: always()
