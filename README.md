@@ -194,7 +194,6 @@ check.
   still pending.
 - Repo hygiene items required by the assessment brief not yet present:
   `LICENSE`, `CONTRIBUTING.md`, `CODEOWNERS`, PR/Issue templates.
-- `teaching/` materials and the two demo videos are not yet produced.
 
 ## License
 
