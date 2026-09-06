@@ -56,6 +56,11 @@ cp .env.example .env
 docker compose up --build
 ```
 
+`.env.example` documents both required variables (`SQL_SA_PASSWORD` and
+`JWT_KEY`, with the constraints each one has to satisfy) — see the
+"Environment Variables" section below for details. `.env` itself is
+gitignored and must never be committed.
+
 Once the API container reports healthy (`/health/ready`), run EF Core
 migrations against the SQL Server container if they haven't been applied yet,
 then start the frontend in a second terminal:
@@ -69,15 +74,6 @@ npm start
 The API listens on `http://localhost:8080`, the Angular dev server on
 `http://localhost:4200` (already whitelisted in CORS via `Cors:AllowedOrigins`
 in `appsettings.example.json`).
-
-> ⚠️ **`.env.example` does not exist in the repo yet.** Until it's added,
-> create a `.env` file at the repo root with at minimum:
-> ```
-> SQL_SA_PASSWORD=<a strong password satisfying SQL Server's complexity policy>
-> JWT_KEY=<a random string, 32+ characters>
-> ```
-> Both are required by `docker-compose.yml` (`SQL_SA_PASSWORD:?...` and
-> `JWT_KEY:?...` — Compose will refuse to start without them).
 
 ## Environment Variables
 
@@ -184,8 +180,6 @@ check.
 ## Known Gaps (honest, as of this commit)
 
 - Angular frontend not yet containerized / added to `docker-compose.yml`.
-- `.env.example` not yet committed (see Quick Start above for the two
-  required variables in the meantime).
 - SQL Server Full-Text Search not enabled in the container image; hybrid
   retrieval currently degrades to dense-only (Qdrant) search
   (`SkipStartupInitializers=true`).
