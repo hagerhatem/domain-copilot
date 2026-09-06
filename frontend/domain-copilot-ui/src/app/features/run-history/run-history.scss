@@ -1,55 +1,116 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.hint-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.error-message {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #b91c1c;
+  background: var(--danger-light);
+  border-radius: var(--radius-sm);
+}
+
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .history-row {
-  padding: 1rem;
-}
+  padding: 16px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
 
-.history-row-main {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
+  &__main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
 
-.run-id {
-  font-family: monospace;
-  font-size: 0.9rem;
-}
+  &__run-id {
+    font-family: monospace;
+    font-size: 14px;
+    color: var(--text-primary);
+  }
 
-.created-at {
-  margin-left: auto;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 0.85rem;
-}
+  &__created-at {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
 
-.termination-reason {
-  margin: 0.5rem 0 0;
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 0.9rem;
+  &__termination-reason {
+    margin: 8px 0 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
 }
 
 .trace-link {
   display: inline-block;
-  margin-top: 0.5rem;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
 }
 
 .chip {
-  padding: 0.2rem 0.6rem;
-  border-radius: 1rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-  background: #e0e0e0;
-}
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface-hover);
+  color: var(--text-secondary);
 
-.chip--completed { background: #c8e6c9; }
-.chip--running { background: #fff9c4; }
-.chip--awaitingapproval { background: #bbdefb; }
-.chip--failed { background: #ffcdd2; }
-.chip--rejected { background: #ffcdd2; }
-.chip--refused { background: #e1bee7; }
-.chip--degraded { background: #ffe0b2; }
-.chip--cancelled { background: #cfd8dc; }
+  &--completed {
+    background: var(--success-light);
+    color: #047857;
+  }
+
+  &--running {
+    background: var(--warning-light);
+    color: #b45309;
+  }
+
+  &--awaitingapproval {
+    background: var(--purple-light);
+    color: var(--purple);
+  }
+
+  &--failed,
+  &--rejected {
+    background: var(--danger-light);
+    color: #b91c1c;
+  }
+
+  &--refused {
+    background: var(--purple-light);
+    color: var(--purple);
+  }
+
+  &--degraded {
+    background: var(--warning-light);
+    color: #b45309;
+  }
+
+  &--cancelled {
+    background: var(--surface-hover);
+    color: var(--text-muted);
+  }
+}

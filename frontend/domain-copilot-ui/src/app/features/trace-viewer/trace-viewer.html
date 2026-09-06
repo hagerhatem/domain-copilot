@@ -25,8 +25,10 @@
 
   @if (trace(); as t) {
     <mat-card class="card run-summary">
-      <mat-card-title>Run {{ t.runId }}</mat-card-title>
       <mat-card-content>
+        <div class="run-summary__title">
+          Run <span class="run-summary__id">{{ t.runId }}</span>
+        </div>
         <div class="summary-grid">
           <p><span class="label">Status</span>{{ t.status }}</p>
           <p><span class="label">Correlation ID</span>{{ t.correlationId }}</p>

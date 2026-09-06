@@ -62,6 +62,23 @@
   }
 }
 
+.run-summary__title {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  max-width: 100%;
+}
+
+.run-summary__id {
+  font-family: monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 .label {
   display: block;
   font-size: 12px;
