@@ -26,7 +26,7 @@
   @if (trace(); as t) {
     <mat-card class="card run-summary">
       <mat-card-content>
-        <div class="run-summary__title">
+        <div class="card-title">
           Run <span class="run-summary__id">{{ t.runId }}</span>
         </div>
         <div class="summary-grid">
@@ -76,8 +76,8 @@
 
     @if (t.approval; as a) {
       <mat-card class="card approval-card">
-        <mat-card-title>Approval Decision</mat-card-title>
         <mat-card-content>
+          <div class="card-title">Approval Decision</div>
           <p><span class="label">Decision</span>{{ a.decisionType }}</p>
           <p><span class="label">Clinician</span>{{ a.clinicianUserId }}</p>
           <p><span class="label">Decided At</span>{{ a.decidedAt | date: 'medium' }}</p>
