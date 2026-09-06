@@ -95,6 +95,9 @@ public sealed class QdrantVectorStore : IVectorStore
     /// to Qdrant's own payload filter rather than applied after the fact, so filtered
     /// queries still return up to TopK genuinely-matching results instead of silently
     /// returning fewer than asked for.
+    ///
+    /// Uses QueryAsync (SearchAsync is obsolete as of this pinned Qdrant.Client version;
+    /// QueryAsync is the direct replacement with the same filter/limit semantics).
     /// </summary>
     public async Task<Result<IReadOnlyList<VectorSearchHit>>> SearchAsync(VectorSearchQuery query, CancellationToken ct)
     {
@@ -104,29 +107,12 @@ public sealed class QdrantVectorStore : IVectorStore
 
             var filter = BuildFilter(query.Filter);
 
-            var results = await _client.SearchAsync(
+            var results = await _client.QueryAsync(
                 collectionName: _options.CollectionName,
-                vector: query.Vector,
+                query: query.Vector,
                 filter: filter,
                 limit: (ulong)query.TopK,
                 cancellationToken: ct);
-
-            //try
-            //{
-            //    await EnsureCollectionAsync(ct);
-            //    var filter = BuildFilter(query.Filter);
-            //    var results = await _client.QueryAsync(
-            //        collectionName: _options.CollectionName,
-            //        query: query.Vector,
-            //        filter: filter,
-            //        limit: (ulong)query.TopK,
-            //        cancellationToken: ct);
-
-            // ⚠ Worth a quick sanity check against the documented zero-length-vector
-            // bug on Upsert (see ToPointStruct comment below) — confirm this SearchAsync
-            // overload's implicit float[] -> query vector conversion actually populates
-            // correctly for your pinned Qdrant.Client version before relying on it in
-            // FR-3's evaluation harness.
 
             var hits = results.Select(ToSearchHit).ToList();
             return Result<IReadOnlyList<VectorSearchHit>>.Success(hits);
@@ -225,13 +211,26 @@ public sealed class QdrantVectorStore : IVectorStore
 
     private PointStruct ToPointStruct(VectorRecord record)
     {
-        // Built explicitly rather than relying on an implicit float[] -> Vectors
-        // conversion — that conversion produced zero-length vectors against this
-        // client/server version combination (observed as Qdrant's "Vector dimension
-        // error: expected dim: N, got 0"). AddRange against the protobuf
-        // RepeatedField<float> is unambiguous and always populates correctly.
+        // TECH DEBT (tracked, do not "clean up" without re-testing): Qdrant.Client 1.19.0
+        // sends dense vectors via a newer `Dense` wire field (added client-side in 1.16.0).
+        // Our pinned Qdrant SERVER is v1.11.0 (see docker-compose.yml), which does not
+        // populate the vector correctly from that field — confirmed via a real upsert
+        // that landed with "expected dim: 768, got 0". The implicit float[] -> Vectors
+        // conversion is therefore NOT safe against this server version, even though it's
+        // the officially documented approach for current Qdrant.Client versions.
+        //
+        // Falling back to the deprecated Vector.Data field, which this server version
+        // does understand and populate correctly. This warning is suppressed only for
+        // this one call, not project-wide.
+        //
+        // TODO: once the Qdrant server image in docker-compose.yml is upgraded to a
+        // version aligned with Qdrant.Client 1.19.0 (and the qdrant-data volume has been
+        // recreated/re-ingested to match), switch back to `Vectors = record.Vector` and
+        // remove this pragma.
         var vector = new Vector();
+#pragma warning disable CS0612 // 'Vector.Data' is obsolete: required for compatibility with pinned Qdrant server v1.11.0
         vector.Data.AddRange(record.Vector);
+#pragma warning restore CS0612
 
         var point = new PointStruct
         {

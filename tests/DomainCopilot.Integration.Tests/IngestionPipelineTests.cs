@@ -178,10 +178,15 @@ public sealed class IngestionPipelineTests : IAsyncLifetime
         // see the note above IVectorStore about this being a Phase 5/FR-2 concern) ---
         var queryVector = _embeddingService.Embed(KnownPhraseFromDocument);
 
-        var searchResults = await _qdrantClient.SearchAsync(
-            _collectionName,
-            queryVector,
-            limit: 3);
+        //var searchResults = await _qdrantClient.SearchAsync(
+        //    _collectionName,
+        //    queryVector,
+        //    limit: 3);
+
+        var searchResults = await _qdrantClient.QueryAsync(
+    _collectionName,
+    queryVector,
+    limit: 3);
 
         Assert.NotEmpty(searchResults);
 
