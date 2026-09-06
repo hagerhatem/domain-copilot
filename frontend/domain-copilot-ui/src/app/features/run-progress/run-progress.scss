@@ -5,11 +5,16 @@
 
   &__header {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 
   &__error {
-    color: #b00020;
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: #b91c1c;
+    background: var(--danger-light);
+    border-radius: var(--radius-sm);
   }
 
   &__chips {
@@ -19,42 +24,143 @@
   }
 
   &__log {
-    background: #111;
-    color: #ddd;
-    padding: 1rem;
+    background: var(--primary);
+    color: #cbd5e1;
+    padding: 16px;
     max-height: 300px;
     overflow-y: auto;
     white-space: pre-wrap;
-    border-radius: 4px;
+    font-size: 13px;
+    border-radius: var(--radius-md);
   }
 }
 
-.chip {
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  background: #eee;
+/* ============================================
+   Buttons (native <button>, styled like theme)
+   ============================================ */
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
-  &--pending { background: #eee; color: #555; }
-  &--running { background: #fff3cd; color: #7a5c00; }
-  &--succeeded { background: #d4edda; color: #155724; }
-  &--refused { background: #d1ecf1; color: #0c5460; }
-  &--failed { background: #f8d7da; color: #721c24; }
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-white);
+  border: none;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* ============================================
+   Status Chips
+   ============================================ */
+.chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface-hover);
+  color: var(--text-secondary);
+
+  &--pending {
+    background: var(--surface-hover);
+    color: var(--text-secondary);
+  }
+
+  &--running {
+    background: var(--warning-light);
+    color: #b45309;
+  }
+
+  &--succeeded {
+    background: var(--success-light);
+    color: #047857;
+  }
+
+  &--refused {
+    background: var(--purple-light);
+    color: #7c3aed;
+  }
+
+  &--failed {
+    background: var(--danger-light);
+    color: #b91c1c;
+  }
+}
+
+/* ============================================
+   Approval Banner
+   ============================================ */
 .run-progress__approval-banner {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #2e7d32;
-  border-radius: 4px;
-  background: #e8f5e9;
-  color: #1b5e20;
+  margin-top: 4px;
+  padding: 16px;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  background: var(--success-light);
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-md);
+  color: #047857;
+
+  strong {
+    color: #047857;
+  }
 }
 
+/* ============================================
+   Trace Link
+   ============================================ */
 .run-progress__trace-link {
   display: inline-block;
-  margin-top: 0.5rem;
+  margin-top: 4px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
 }

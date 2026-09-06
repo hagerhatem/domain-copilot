@@ -1,7 +1,12 @@
 <div class="run-progress">
   <div class="run-progress__header">
-    <button type="button" (click)="start()" [disabled]="isRunning()">Start Run</button>
-    <button type="button" (click)="cancel()" [disabled]="!runId() || !isRunning() || isCancelling()">
+    <button type="button" class="btn-primary" (click)="start()" [disabled]="isRunning()">Start Run</button>
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="cancel()"
+      [disabled]="!runId() || !isRunning() || isCancelling()"
+    >
       {{ isCancelling() ? 'Cancelling…' : 'Cancel' }}
     </button>
   </div>
@@ -20,11 +25,11 @@
 
   @if (isAwaitingApproval()) {
     <div class="run-progress__approval-banner">
-      <strong>✅ Run complete — awaiting clinician approval.</strong>
-      <a routerLink="/approvals">Go to Approval Queue</a>
+      <strong>Run complete — awaiting clinician approval.</strong>
+      <a class="btn-primary" routerLink="/approvals">Go to Approval Queue</a>
     </div>
   }
   @if (runId()) {
-    <a class="run-progress__trace-link" [routerLink]="['/trace', runId()]">View Full Trace</a>
+    <a class="run-progress__trace-link" [routerLink]="['/trace', runId()]">View Full Trace →</a>
   }
 </div>

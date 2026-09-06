@@ -1,82 +1,93 @@
-<mat-card>
-  <mat-card-title>Run Trace</mat-card-title>
-  <mat-card-content>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Run ID</mat-label>
-      <input matInput [(ngModel)]="inputRunId" (keyup.enter)="loadFromInput()" />
-    </mat-form-field>
-    <button mat-flat-button color="primary" (click)="loadFromInput()">Load Trace</button>
+<div class="page">
+  <div class="page-header">
+    <h1>Run Trace</h1>
+    <p>Inspect a run's steps, costs, and approval decision</p>
+  </div>
 
-    @if (isLoading()) {
-      <p>Loading…</p>
-    }
-    @if (errorMessage()) {
-      <p class="error">{{ errorMessage() }}</p>
-    }
-  </mat-card-content>
-</mat-card>
-
-@if (trace(); as t) {
-  <mat-card class="run-summary">
-    <mat-card-title>Run {{ t.runId }}</mat-card-title>
+  <mat-card class="card">
     <mat-card-content>
-      <p><strong>Status:</strong> {{ t.status }}</p>
-      <p><strong>Correlation ID:</strong> {{ t.correlationId }}</p>
-      <p><strong>Created:</strong> {{ t.createdAt | date: 'medium' }}</p>
-      @if (t.completedAt) {
-        <p><strong>Completed:</strong> {{ t.completedAt | date: 'medium' }}</p>
+      <div class="load-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Run ID</mat-label>
+          <input matInput [(ngModel)]="inputRunId" (keyup.enter)="loadFromInput()" />
+        </mat-form-field>
+        <button mat-flat-button color="primary" class="load-btn" (click)="loadFromInput()">Load Trace</button>
+      </div>
+
+      @if (isLoading()) {
+        <p class="hint-text">Loading…</p>
       }
-      @if (t.terminationReason) {
-        <p><strong>Termination Reason:</strong> {{ t.terminationReason }}</p>
+      @if (errorMessage()) {
+        <p class="error-message">{{ errorMessage() }}</p>
       }
-      <p><strong>Total Tokens:</strong> {{ t.totalTokens }} &nbsp; <strong>Total Cost:</strong> ${{ t.totalEstimatedCostUsd.toFixed(4) }}</p>
     </mat-card-content>
   </mat-card>
 
-  <h3>Steps</h3>
-  @for (step of t.steps; track step.stepIndex) {
-    <mat-card class="step-card">
+  @if (trace(); as t) {
+    <mat-card class="card run-summary">
+      <mat-card-title>Run {{ t.runId }}</mat-card-title>
       <mat-card-content>
-        <div class="step-header">
-          <strong>{{ step.stepIndex }}. {{ step.agentRole }}</strong>
-          <span class="chip" [class]="'chip--' + step.status.toLowerCase()">{{ step.status }}</span>
+        <div class="summary-grid">
+          <p><span class="label">Status</span>{{ t.status }}</p>
+          <p><span class="label">Correlation ID</span>{{ t.correlationId }}</p>
+          <p><span class="label">Created</span>{{ t.createdAt | date: 'medium' }}</p>
+          @if (t.completedAt) {
+            <p><span class="label">Completed</span>{{ t.completedAt | date: 'medium' }}</p>
+          }
+          @if (t.terminationReason) {
+            <p><span class="label">Termination Reason</span>{{ t.terminationReason }}</p>
+          }
+          <p><span class="label">Total Tokens</span>{{ t.totalTokens }}</p>
+          <p><span class="label">Total Cost</span>${{ t.totalEstimatedCostUsd.toFixed(4) }}</p>
         </div>
-        @if (step.toolName) {
-          <p><strong>Tool:</strong> {{ step.toolName }}</p>
-        }
-        <p><strong>Input:</strong> {{ step.input }}</p>
-        @if (step.output) {
-          <p><strong>Output:</strong> {{ step.output }}</p>
-        }
-        @if (step.errorMessage) {
-          <p class="error"><strong>Error:</strong> {{ step.errorMessage }}</p>
-        }
-        <p class="step-meta">
-          @if (step.modelUsed) { Model: {{ step.modelUsed }} &nbsp; }
-          Tokens: {{ step.totalTokens }} &nbsp;
-          Cost: ${{ step.estimatedCostUsd.toFixed(4) }} &nbsp;
-          @if (step.startedAt) { Started: {{ step.startedAt | date: 'mediumTime' }} }
-          @if (step.completedAt) { — Completed: {{ step.completedAt | date: 'mediumTime' }} }
-        </p>
       </mat-card-content>
     </mat-card>
-  }
 
-  @if (t.approval; as a) {
-    <mat-card class="approval-card">
-      <mat-card-title>Approval Decision</mat-card-title>
-      <mat-card-content>
-        <p><strong>Decision:</strong> {{ a.decisionType }}</p>
-        <p><strong>Clinician:</strong> {{ a.clinicianUserId }}</p>
-        <p><strong>Decided At:</strong> {{ a.decidedAt | date: 'medium' }}</p>
-        @if (a.rejectionReason) {
-          <p><strong>Rejection Reason:</strong> {{ a.rejectionReason }}</p>
-        }
-        @if (a.editedContent) {
-          <p><strong>Edited Content:</strong></p>
-          <pre>{{ a.editedContent }}</pre>
-        }
-      </mat-card-content>
-    </mat-card>
+    <h3 class="section-title">Steps</h3>
+    @for (step of t.steps; track step.stepIndex) {
+      <mat-card class="card step-card">
+        <mat-card-content>
+          <div class="step-header">
+            <strong>{{ step.stepIndex }}. {{ step.agentRole }}</strong>
+            <span class="chip" [class]="'chip--' + step.status.toLowerCase()">{{ step.status }}</span>
+          </div>
+          @if (step.toolName) {
+            <p><span class="label">Tool</span>{{ step.toolName }}</p>
+          }
+          <p><span class="label">Input</span>{{ step.input }}</p>
+          @if (step.output) {
+            <p><span class="label">Output</span>{{ step.output }}</p>
+          }
+          @if (step.errorMessage) {
+            <p class="error-message"><strong>Error:</strong> {{ step.errorMessage }}</p>
+          }
+          <p class="step-meta">
+            @if (step.modelUsed) { Model: {{ step.modelUsed }} &nbsp; }
+            Tokens: {{ step.totalTokens }} &nbsp;
+            Cost: ${{ step.estimatedCostUsd.toFixed(4) }} &nbsp;
+            @if (step.startedAt) { Started: {{ step.startedAt | date: 'mediumTime' }} }
+            @if (step.completedAt) { — Completed: {{ step.completedAt | date: 'mediumTime' }} }
+          </p>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (t.approval; as a) {
+      <mat-card class="card approval-card">
+        <mat-card-title>Approval Decision</mat-card-title>
+        <mat-card-content>
+          <p><span class="label">Decision</span>{{ a.decisionType }}</p>
+          <p><span class="label">Clinician</span>{{ a.clinicianUserId }}</p>
+          <p><span class="label">Decided At</span>{{ a.decidedAt | date: 'medium' }}</p>
+          @if (a.rejectionReason) {
+            <p><span class="label">Rejection Reason</span>{{ a.rejectionReason }}</p>
+          }
+          @if (a.editedContent) {
+            <p class="label">Edited Content</p>
+            <pre class="edited-content">{{ a.editedContent }}</pre>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
   }
-}
+</div>

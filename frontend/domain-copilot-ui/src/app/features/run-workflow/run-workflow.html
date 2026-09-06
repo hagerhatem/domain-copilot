@@ -1,63 +1,77 @@
-<mat-card>
-  <mat-card-title>Run Clinical Workflow</mat-card-title>
-  <mat-card-content>
-    <mat-tab-group>
-      <mat-tab label="Select Existing Case">
-        @if (isLoadingCases()) {
-          <p>Loading…</p>
-        } @else if (existingCases().length === 0) {
-          <p>No cases yet — create one in the other tab.</p>
-        } @else {
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Clinical Case</mat-label>
-            <mat-select [(ngModel)]="selectedCaseId">
-              @for (c of existingCases(); track c.id) {
-                <mat-option [value]="c.id">{{ c.caseReference }} — {{ c.presentingComplaint }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <button mat-flat-button color="primary" (click)="selectExisting()">Load Case</button>
-        }
-      </mat-tab>
+<div class="page">
+  <div class="page-header">
+    <h1>Run Clinical Workflow</h1>
+    <p>Select an existing case or start a new one</p>
+  </div>
 
-      <mat-tab label="Create New Case">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Case Reference</mat-label>
-          <input matInput [(ngModel)]="caseReference" />
-        </mat-form-field>
+  <mat-card class="card">
+    <mat-card-content>
+      <mat-tab-group class="workflow-tabs">
+        <mat-tab label="Select Existing Case">
+          <div class="tab-content">
+            @if (isLoadingCases()) {
+              <p class="hint-text">Loading…</p>
+            } @else if (existingCases().length === 0) {
+              <p class="hint-text">No cases yet — create one in the other tab.</p>
+            } @else {
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Clinical Case</mat-label>
+                <mat-select [(ngModel)]="selectedCaseId">
+                  @for (c of existingCases(); track c.id) {
+                    <mat-option [value]="c.id">{{ c.caseReference }} — {{ c.presentingComplaint }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <button mat-flat-button color="primary" class="action-btn" (click)="selectExisting()">
+                Load Case
+              </button>
+            }
+          </div>
+        </mat-tab>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Presenting Complaint</mat-label>
-          <textarea matInput rows="2" [(ngModel)]="presentingComplaint"></textarea>
-        </mat-form-field>
+        <mat-tab label="Create New Case">
+          <div class="tab-content">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Case Reference</mat-label>
+              <input matInput [(ngModel)]="caseReference" />
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Proposed Medication</mat-label>
-          <input matInput [(ngModel)]="proposedMedication" />
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Presenting Complaint</mat-label>
+              <textarea matInput rows="2" [(ngModel)]="presentingComplaint"></textarea>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Current Medications (comma-separated)</mat-label>
-          <input matInput [(ngModel)]="currentMedicationsInput" />
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Proposed Medication</mat-label>
+              <input matInput [(ngModel)]="proposedMedication" />
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Patient Context (optional)</mat-label>
-          <textarea matInput rows="2" [(ngModel)]="patientContext"></textarea>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Current Medications (comma-separated)</mat-label>
+              <input matInput [(ngModel)]="currentMedicationsInput" />
+            </mat-form-field>
 
-        <button mat-flat-button color="primary" [disabled]="isCreating()" (click)="createCase()">
-          {{ isCreating() ? 'Creating…' : 'Create & Load' }}
-        </button>
-      </mat-tab>
-    </mat-tab-group>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Patient Context (optional)</mat-label>
+              <textarea matInput rows="2" [(ngModel)]="patientContext"></textarea>
+            </mat-form-field>
 
-    @if (errorMessage()) {
-      <p class="error">{{ errorMessage() }}</p>
-    }
-  </mat-card-content>
-</mat-card>
+            <button mat-flat-button color="primary" class="action-btn" [disabled]="isCreating()" (click)="createCase()">
+              {{ isCreating() ? 'Creating…' : 'Create & Load' }}
+            </button>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
 
-@if (activeCaseId()) {
-  <app-run-progress [clinicalCaseId]="activeCaseId()!" />
-}
+      @if (errorMessage()) {
+        <p class="error-message">{{ errorMessage() }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (activeCaseId()) {
+    <div class="progress-section">
+      <app-run-progress [clinicalCaseId]="activeCaseId()!" />
+    </div>
+  }
+</div>

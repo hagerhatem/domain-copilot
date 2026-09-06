@@ -1,11 +1,59 @@
-.error {
-  color: #b00020;
+.hint-text {
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
-.full-width {
-  width: 100%;
+.error-message {
+  margin: 8px 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #b91c1c;
+  background: var(--danger-light);
+  border-radius: var(--radius-sm);
 }
 
+/* ============================================
+   Accordion / Panels
+   ============================================ */
+.queue-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.queue-panel {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  overflow: hidden;
+
+  &:not(.mat-expanded):hover {
+    box-shadow: var(--shadow-md) !important;
+  }
+
+  ::ng-deep .mat-expansion-panel-header-title {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  ::ng-deep .mat-expansion-panel-header-description {
+    color: var(--text-secondary);
+  }
+}
+
+.section-label {
+  margin: 16px 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
+   Status Chips
+   ============================================ */
 .chips {
   display: flex;
   gap: 0.5rem;
@@ -14,33 +62,79 @@
 }
 
 .chip {
-  padding: 0.25rem 0.75rem;
+  padding: 4px 12px;
   border-radius: 999px;
-  font-size: 0.85rem;
-  background: #eee;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface-hover);
+  color: var(--text-secondary);
 
-  &--succeeded { background: #d4edda; color: #155724; }
-  &--failed { background: #f8d7da; color: #721c24; }
-  &--running { background: #fff3cd; color: #7a5c00; }
-  &--pending { background: #eee; color: #555; }
+  &--succeeded {
+    background: var(--success-light);
+    color: #047857;
+  }
+
+  &--failed {
+    background: var(--danger-light);
+    color: #b91c1c;
+  }
+
+  &--running {
+    background: var(--warning-light);
+    color: #b45309;
+  }
+
+  &--pending {
+    background: var(--surface-hover);
+    color: var(--text-secondary);
+  }
 }
 
+/* ============================================
+   Draft Text
+   ============================================ */
 .draft-text {
-  background: #f5f5f5;
-  padding: 1rem;
-  border-radius: 4px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: var(--radius-md);
   white-space: pre-wrap;
   margin-bottom: 1rem;
+  font-size: 13px;
+  color: var(--text-primary);
 }
 
+.full-width {
+  width: 100%;
+}
+
+/* ============================================
+   Trace Link
+   ============================================ */
+.trace-link {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+}
+
+/* ============================================
+   Actions
+   ============================================ */
 .actions {
   display: flex;
   gap: 0.5rem;
   margin-top: 0.5rem;
   flex-wrap: wrap;
-}
 
-.trace-link {
-  display: inline-block;
-  margin-bottom: 0.5rem;
+  button {
+    border-radius: var(--radius-md) !important;
+  }
 }

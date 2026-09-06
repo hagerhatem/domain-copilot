@@ -1,21 +1,3 @@
-// @use '@angular/material' as mat;
-
-// html {
-//   @include mat.theme(
-//     (
-//       color: mat.$violet-palette,
-//       typography: Roboto,
-//       density: 0,
-//     )
-//   );
-// }
-
-// html,
-// body {
-//   height: 100%;
-//   margin: 0;
-//   font-family: Roboto, 'Helvetica Neue', sans-serif;
-// }
 @use '@angular/material' as mat;
 
 html {
@@ -37,9 +19,9 @@ html {
   --primary: #0f172a;
   --primary-light: #1e293b;
 
-  --accent: #6366f1;
-  --accent-hover: #4f46e5;
-  --accent-light: #eef2ff;
+  --accent: #33456e;
+  --accent-hover: #24324f;
+  --accent-light: #eef1f6;
 
   --purple: #8b5cf6;
   --purple-light: #f5f3ff;
