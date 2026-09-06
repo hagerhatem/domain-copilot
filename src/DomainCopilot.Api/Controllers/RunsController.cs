@@ -130,6 +130,20 @@ public sealed class RunsController : ControllerBase
             _progressReporter.Complete();
             throw;
         }
+        catch (Exception ex)
+        {
+            // BUGFIX: any exception other than the two cases above previously
+            // escaped this method WITHOUT calling _progressReporter.Complete() -
+            // leaving the channel open forever and the controller's `await foreach`
+            // waiting indefinitely for an event that would never arrive (observed
+            // directly: SSE connection stayed open with only "Run started"
+            // received, no further events, no error surfaced anywhere). Any
+            // unexpected exception here must still close the channel so the client
+            // gets a terminal signal instead of hanging silently.
+            _progressReporter.Report(new AgentProgressEvent(
+                Guid.Empty, AgentProgressEventType.RunFailed, null, ex.Message, DateTimeOffset.UtcNow));
+            _progressReporter.Complete();
+        }
     }
 
     private bool IsAdmin() => User.IsInRole("Admin");
