@@ -78,6 +78,7 @@ public sealed class ApprovalWorkflowUseCase
         var decision = buildDecision(run, draftText, decidedAt);
 
         run.ApplyApprovalDecision(decision, decidedAt);
+        await _repository.AddApprovalDecisionAsync(decision, ct);
 
         await _auditWriter.RecordAsync(
             new ApprovalAuditEntry(runId, clinicianUserId, previousStatus, decisionTypeLabel, comment, decidedAt), ct);

@@ -188,6 +188,7 @@ public sealed class PipelineOrchestrator
     {
         var step = AgentStep.Create(run.Id, stepIndex, role, input);
         run.AddStep(step);
+        await _repository.AddStepAsync(step, ct);
         await _repository.SaveChangesAsync(ct);
 
         step.Start(_clock.UtcNow);

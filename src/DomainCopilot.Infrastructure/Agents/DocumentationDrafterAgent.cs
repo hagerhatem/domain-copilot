@@ -155,7 +155,10 @@ public sealed class DocumentationDrafterAgent : IDocumentationDrafterAgent
         clinical note has been approved because of it (approval is a separate human
         workflow step this assistant has no ability to grant or record).
 
-        Output exactly two sections labeled "SUBJECTIVE:" and "ASSESSMENT AND PLAN:".
+                Output exactly two sections labeled "SUBJECTIVE:" and "ASSESSMENT AND PLAN:".
+        Write in plain text only - no Markdown formatting of any kind (no asterisks
+        for bold/italic, no bullet points, no headers). This is a clinical document,
+        not a chat response.
         """;
 
     private static string BuildUserMessage(DocumentationDrafterInput input, bool strict)
@@ -205,8 +208,23 @@ public sealed class DocumentationDrafterAgent : IDocumentationDrafterAgent
             return false;
         }
 
-        subjective = text[(subjectiveIndex + SubjectiveMarker.Length)..planIndex].Trim();
-        assessmentAndPlan = text[(planIndex + PlanMarker.Length)..].Trim();
+        subjective = StripMarkdownBold(text[(subjectiveIndex + SubjectiveMarker.Length)..planIndex].Trim());
+        assessmentAndPlan = StripMarkdownBold(text[(planIndex + PlanMarker.Length)..].Trim());
         return !string.IsNullOrWhiteSpace(subjective) && !string.IsNullOrWhiteSpace(assessmentAndPlan);
     }
+
+    /// <summary>
+    /// Defense-in-depth against the model emitting Markdown bold markers (**) around
+    /// clinical text despite SystemInstructions explicitly forbidding it - strips
+    /// stray "**" sequences (including lines that are only "**") without altering
+    /// any actual clinical content, since asterisks never carry clinical meaning.
+    /// </summary>
+    private static string StripMarkdownBold(string text) =>
+        string.Join(
+            "\n",
+            text.Replace("**", string.Empty)
+                .Split('\n')
+                .Select(line => line.Trim())
+                .Where(line => line.Length > 0))
+        .Trim();
 }

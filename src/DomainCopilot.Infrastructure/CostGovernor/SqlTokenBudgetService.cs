@@ -46,6 +46,7 @@ public sealed class SqlTokenBudgetService : ITokenBudgetService
             .FromSqlInterpolated($@"
                 SELECT * FROM TokenBudgets WITH (UPDLOCK, ROWLOCK)
                 WHERE UserId = {userId} AND PeriodStart <= {now} AND PeriodEnd > {now}")
+            .AsTracking() // see note below
             .SingleOrDefaultAsync(ct);
 
         if (budget is null)
@@ -53,6 +54,19 @@ public sealed class SqlTokenBudgetService : ITokenBudgetService
             await tx.RollbackAsync(ct);
             throw new NoActiveBudgetPeriodError(userId, now);
         }
+
+        // BUGFIX: this method's DbContext is the SAME scoped instance used earlier
+        // in the same request by HasSufficientBudgetAsync, which already loaded and
+        // saved changes to this exact TokenBudget row. EF Core's identity
+        // resolution means the query above returns that already-tracked, stale-in-
+        // memory instance rather than a fresh copy reflecting the just-committed
+        // UPDLOCK'd row - so ConsumedTokens here is one Consume() behind the real
+        // database value, and the subsequent SaveChangesAsync fails with "0 rows
+        // affected" (observed directly - the row lock/values are correct in the
+        // database, only the in-memory copy is stale). ReloadAsync forces EF to
+        // overwrite the tracked instance's property values from the database row
+        // just locked, before Reconcile() runs.
+        await _db.Entry(budget).ReloadAsync(ct);
 
         if (!budget.HasSufficientBudget(estimatedTokens))
         {
@@ -88,6 +102,18 @@ public sealed class SqlTokenBudgetService : ITokenBudgetService
             throw new NoActiveBudgetPeriodError(reconciliation.UserId, now);
         }
 
+        // BUGFIX: this method's DbContext is the SAME scoped instance used earlier
+        // in the same request by HasSufficientBudgetAsync, which already loaded and
+        // saved changes to this exact TokenBudget row. EF Core's identity
+        // resolution means the query above returns that already-tracked, stale-in-
+        // memory instance rather than a fresh copy reflecting the just-committed
+        // UPDLOCK'd row - so ConsumedTokens here is one Consume() behind the real
+        // database value, and the subsequent SaveChangesAsync fails with "0 rows
+        // affected" (observed directly). ReloadAsync forces EF to overwrite the
+        // tracked instance's property values from the database row just locked,
+        // before Reconcile() runs.
+        await _db.Entry(budget).ReloadAsync(ct);
+
         // Deliberately does NOT throw BudgetExceededError even if reconciliation
         // pushes ConsumedTokens above AllocatedTokens - the tokens were already
         // genuinely spent with the LLM provider by the time this runs; refusing to
@@ -98,7 +124,7 @@ public sealed class SqlTokenBudgetService : ITokenBudgetService
 
         var usageRecord = UsageRecord.Create(
             reconciliation.RunId,
-            reconciliation.UserId,
+             reconciliation.UserId,
             reconciliation.ModelName,
             reconciliation.ActualUsage,
             reconciliation.EstimatedCostUsd,

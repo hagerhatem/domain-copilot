@@ -25,6 +25,12 @@ export const routes: Routes = [
     data: { roles: ['Clinician'] },
     loadComponent: () => import('./features/approval-queue/approval-queue').then((m) => m.ApprovalQueue),
   },
+  {
+    path: 'history',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Clinician'] },
+    loadComponent: () => import('./features/run-history/run-history').then((m) => m.RunHistory),
+  },
 //   {
 //     path: 'trace/:runId',
 //     canActivate: [authGuard],

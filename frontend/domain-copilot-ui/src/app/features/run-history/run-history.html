@@ -1,0 +1,30 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Run History</h1>
+    <p>All clinical runs you've initiated</p>
+  </div>
+
+  @if (isLoading()) {
+    <p class="hint-text">Loading…</p>
+  } @else if (loadError()) {
+    <p class="error-message">{{ loadError() }}</p>
+  } @else if (runs().length === 0) {
+    <p class="hint-text">No runs yet.</p>
+  } @else {
+    <div class="history-list">
+      @for (run of runs(); track run.runId) {
+        <mat-card class="history-row">
+          <div class="history-row-main">
+            <span class="chip" [class]="'chip--' + run.status.toLowerCase()">{{ run.status }}</span>
+            <span class="run-id">{{ run.runId }}</span>
+            <span class="created-at">{{ run.createdAt | date: 'medium' }}</span>
+          </div>
+          @if (run.terminationReason) {
+            <p class="termination-reason">{{ run.terminationReason }}</p>
+          }
+          <a [routerLink]="['/trace', run.runId]" class="trace-link">View Full Trace →</a>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

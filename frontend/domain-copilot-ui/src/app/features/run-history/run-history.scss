@@ -1,0 +1,55 @@
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-row {
+  padding: 1rem;
+}
+
+.history-row-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.run-id {
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.created-at {
+  margin-left: auto;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}
+
+.termination-reason {
+  margin: 0.5rem 0 0;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 0.9rem;
+}
+
+.trace-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.chip {
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: #e0e0e0;
+}
+
+.chip--completed { background: #c8e6c9; }
+.chip--running { background: #fff9c4; }
+.chip--awaitingapproval { background: #bbdefb; }
+.chip--failed { background: #ffcdd2; }
+.chip--rejected { background: #ffcdd2; }
+.chip--refused { background: #e1bee7; }
+.chip--degraded { background: #ffe0b2; }
+.chip--cancelled { background: #cfd8dc; }

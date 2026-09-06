@@ -19,16 +19,19 @@ public sealed class RunsController : ControllerBase
     private readonly RunClinicalWorkflowUseCase _useCase;
     private readonly ChannelAgentProgressReporter _progressReporter;
     private readonly IRunCancellationRegistry _cancellationRegistry;
+    private readonly ILogger<RunsController> _logger;
 
     public RunsController(
         IClinicalCaseRepository clinicalCaseRepository,
         RunClinicalWorkflowUseCase useCase,
         IAgentProgressReporter progressReporter,
-        IRunCancellationRegistry cancellationRegistry)
+        IRunCancellationRegistry cancellationRegistry,
+        ILogger<RunsController> logger)
     {
         _clinicalCaseRepository = clinicalCaseRepository ?? throw new ArgumentNullException(nameof(clinicalCaseRepository));
         _useCase = useCase ?? throw new ArgumentNullException(nameof(useCase));
         _cancellationRegistry = cancellationRegistry ?? throw new ArgumentNullException(nameof(cancellationRegistry));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         _progressReporter = progressReporter as ChannelAgentProgressReporter
             ?? throw new InvalidOperationException(
@@ -140,6 +143,7 @@ public sealed class RunsController : ControllerBase
             // received, no further events, no error surfaced anywhere). Any
             // unexpected exception here must still close the channel so the client
             // gets a terminal signal instead of hanging silently.
+            _logger.LogError(ex, "Unhandled exception while running workflow for case {ClinicalCaseId}.", command.ClinicalCaseId);
             _progressReporter.Report(new AgentProgressEvent(
                 Guid.Empty, AgentProgressEventType.RunFailed, null, ex.Message, DateTimeOffset.UtcNow));
             _progressReporter.Complete();
