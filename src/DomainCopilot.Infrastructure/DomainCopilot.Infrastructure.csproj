@@ -12,7 +12,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+    <!-- Direct overrides: EF Core 8.0.10 transitively pulls Microsoft.Data.SqlClient 5.1.5,
+         which brings in Azure.Identity 1.10.3, Microsoft.Identity.Client 4.56.0, and
+         System.Formats.Asn1 5.0.0 - all with known CVEs. Pinning these two here forces
+         NuGet to resolve the patched versions across the whole dependency graph. -->
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.11" />
     <PackageReference Include="PdfPig" Version="0.1.16" />
     <PackageReference Include="Qdrant.Client" Version="1.19.0" />
